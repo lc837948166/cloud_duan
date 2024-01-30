@@ -177,7 +177,7 @@ public class LibvirtService {
             String[] parts = line.split(":");
             if (parts.length == 2) {
                 String name = parts[0];
-                String ip = parts[1].trim();
+                String ip = parts[1].trim().substring(0, Math.min(parts[1].trim().length(), 15));
                 if (!ip.isEmpty()) {
                     VMInfo2 virtualMachine = new VMInfo2();
                     virtualMachine.setName(name);
