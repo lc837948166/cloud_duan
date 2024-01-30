@@ -1,0 +1,50 @@
+[
+  {
+    "name": "vm1",
+    "virtualMachineIp": "192.168.174.133",
+    "userName": "root",
+    "userPassword": "@wsad1234"
+  },
+  {
+    "name": "vm2",
+    "virtualMachineIp": "192.168.174.134",
+    "userName": "root",
+    "userPassword": "@wsad1234"
+  },
+  {
+    "name": "vm3",
+    "virtualMachineIp": "192.168.174.134",
+    "userName": "root",
+    "userPassword": "@wsad1234"
+  },
+  {
+    "name": "vm4",
+    "virtualMachineIp": "192.168.174.134",
+    "userName": "root",
+    "userPassword": "@wsad1234"
+  },
+  {
+    "name": "vm5",
+    "virtualMachineIp": "192.168.174.134",
+    "userName": "root",
+    "userPassword": "@wsad1234"
+  },
+  {
+    "name": "vm6",
+    "virtualMachineIp": "192.168.174.134",
+    "userName": "root",
+    "userPassword": "@wsad1234"
+  },
+  {
+    "name": "vm7",
+    "virtualMachineIp": "192.168.174.134",
+    "userName": "root",
+    "userPassword": "@wsad1234"
+  },
+  {
+    "name": "vm8",
+    "virtualMachineIp": "192.168.174.134",
+    "userName": "root",
+    "userPassword": "@wsad1234"
+  }
+]
