@@ -138,6 +138,8 @@ public class VMInfoController {
         fixedNumbers.add(7052);
         fixedNumbers.add(7053);
 
+        Integer[] fixed2={8000,8085,8002,8003,8004};
+
         for (VMInfo2 item : tempList) {
             if (item.getHostport() == null) {
                 Map<String, Object> modifiedEntry = new HashMap<>();
@@ -154,6 +156,7 @@ public class VMInfoController {
                 modifiedList.add(modifiedEntry);
 
             } else {
+
                 int hostport = item.getHostport();
                 Map<String, Object> modifiedEntry = new HashMap<>();
                 modifiedEntry.put("name", item.getName());
@@ -165,10 +168,19 @@ public class VMInfoController {
                 modifiedEntry.put("memory", item.getMemory());
                 modifiedEntry.put("status", item.getStatus());
                 List<Map<String, Object>> hostportList = new ArrayList<>();
-                for (int i = 0; i < fixedNumbers.size(); i++) {
-                    Map<String, Object> hostportEntry = new HashMap<>();
-                    hostportEntry.put(String.valueOf(fixedNumbers.get(i)), String.valueOf(hostport + i));
-                    hostportList.add(hostportEntry);
+                if(item.getIp().equals("10.0.8.2")){
+                    for (int i = 0; i < fixedNumbers.size(); i++) {
+                        Map<String, Object> hostportEntry = new HashMap<>();
+                        hostportEntry.put(String.valueOf(fixedNumbers.get(i)), String.valueOf(fixed2[i]));
+                        hostportList.add(hostportEntry);
+                    }
+                }
+                else {
+                    for (int i = 0; i < fixedNumbers.size(); i++) {
+                        Map<String, Object> hostportEntry = new HashMap<>();
+                        hostportEntry.put(String.valueOf(fixedNumbers.get(i)), String.valueOf(hostport + i));
+                        hostportList.add(hostportEntry);
+                    }
                 }
                 modifiedEntry.put("hostport", hostportList);
                 modifiedList.add(modifiedEntry);
