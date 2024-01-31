@@ -58,9 +58,10 @@ public class VMInfoController {
     @ResponseBody
     @RequestMapping("/getHostPort")
     public CommentResp getPort(@RequestParam("vmip") String ip,@RequestParam("vmport") int vmport) {
-        int[] arrayPort = {8000, 8085, 7051, 7052, 7053};
+        int[] arrayPort = {8000, 8085, 8086, 7051, 7052, 7053};
         int index = -1;
-        for (int i = 0; i < 5; i++) {
+
+        for (int i = 0; i < 6; i++) {
             if (arrayPort[i] == vmport) {
                 index = i;
                 break;
@@ -72,13 +73,17 @@ public class VMInfoController {
 
 //        Ipaddr ipaddr = ipaddrMapper.selectById(vminfo.getServerip());
 
+
         Map<String, Object> entry = new HashMap<>();
         entry.put("serverip", vminfo.getServerip());
+        if(ip.equals("10.0.8.2")){
+            entry.put("hostport", vmport);
+        }
+        else {
+            entry.put("hostport", vminfo.getHostport()+index);
+        }
 //        entry.put("realip", ipaddr.getRealip());
-        entry.put("hostport", vminfo.getHostport()+index);
-
         System.out.println(entry);
-
         return new CommentResp(true, entry,"");
     }
 
@@ -134,11 +139,12 @@ public class VMInfoController {
         List<Integer> fixedNumbers = new ArrayList<>();
         fixedNumbers.add(8000);
         fixedNumbers.add(8085);
+        fixedNumbers.add(8086);
         fixedNumbers.add(7051);
         fixedNumbers.add(7052);
         fixedNumbers.add(7053);
 
-        Integer[] fixed2={8000,8085,8002,8003,8004};
+        Integer[] fixed2={8000,8085,8086,7051,7052,7053};
 
         for (VMInfo2 item : tempList) {
             if (item.getHostport() == null) {

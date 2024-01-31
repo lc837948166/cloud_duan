@@ -30,7 +30,7 @@ public class LibvirtService {
     @Resource
     private NodeMapper nodeMapper;
 
-    static int[] arrayPort = {8000, 8085, 7051, 7052, 7053};
+    static int[] arrayPort = {8000, 8085, 8086, 7051, 7052, 7053};
 
     @Resource
     private IpaddrMapper ipaddrMapper;
@@ -682,7 +682,7 @@ public class LibvirtService {
     @SneakyThrows
     public void addport(String name){
         String ip=vmMapper.selectById(name).getIp();
-        List<Integer> availablePorts = findAvailablePortSequence(12345,5);
+        List<Integer> availablePorts = findAvailablePortSequence(12345,6);
 
         VMInfo2 vm = new VMInfo2();
         vm.setName(name);
@@ -696,7 +696,7 @@ public class LibvirtService {
         SftpUtils.getexecon(endCommand);
 
         StringBuilder addCommands = new StringBuilder();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 6; i++) {
             addCommands.append(String.format("echo '0.0.0.0 %d  %s %d' >> /etc/rinetd.conf && ", availablePorts.get(i), ip, arrayPort[i]));
         }
         String combinedCommand = addCommands.toString();
@@ -751,7 +751,7 @@ public class LibvirtService {
         Integer hostport = vmMapper.selectById(name).getHostport();
         if (hostport != null) {
         String filePath = "/etc/rinetd.conf";
-        int linesToRemove = 5;
+        int linesToRemove = 6;
 
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
         StringBuilder contentBuilder = new StringBuilder();
