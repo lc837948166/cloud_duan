@@ -215,7 +215,7 @@ public class LibvirtService {
     }
     @SneakyThrows
     public Virtual getIndex(String name,Integer up,Integer down) {
-        return getIndexByName(name,up,down);
+        return getIndexByName(name,up*1000,down*1000);
     }
 
     @SneakyThrows
