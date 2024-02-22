@@ -636,6 +636,7 @@ public class LibvirtService {
 
             }
 
+    @SneakyThrows
      public void updateNIC(String name,String ip){
          VMInfo2 vmInfo2 = new VMInfo2();
          vmInfo2.setName(name);
@@ -669,7 +670,7 @@ public class LibvirtService {
                 .serverip(serverip).build();
         vmMapper.insert(vmInfo2);
     }
-
+    @SneakyThrows
     public String findRealIP(String serverip){
         String realip=null;
         Ipaddr ip= ipaddrMapper.selectById(serverip);
@@ -719,7 +720,7 @@ public class LibvirtService {
             System.out.println("命令执行超时");
         }
     }
-
+    @SneakyThrows
     private static List<Integer> findAvailablePortSequence(int startingPort, int sequenceLength) {
         List<Integer> availablePorts = new ArrayList<>();
         int port = startingPort;
