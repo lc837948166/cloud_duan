@@ -849,7 +849,7 @@ public class LibvirtService {
         NodeInfo nodeInfo = nodeMapper.selectOne(queryWrapper);
         ChannelSftp channel=SftpUtils.getSftpcon(nodeInfo.getNodeUserPasswd());
         channel.cd("/home/qemuVM/VM_place/");
-        channel.rm(name);
+        channel.rm(name + ".qcow2");
         SftpUtils.discon();
     }
 

@@ -204,7 +204,7 @@ public class LibvirtController {
     public CommentResp deleteVirtual(@PathVariable("name") String name) {
         libvirtService.deletePort(name);
         libvirtService.deleteDomainByName(name);
-        libvirtService.deleteImgFile(name + ".qcow2");
+        libvirtService.deleteImgFile(name);
 
         return new CommentResp(true, null,name+".qcow2删除成功");
     }
