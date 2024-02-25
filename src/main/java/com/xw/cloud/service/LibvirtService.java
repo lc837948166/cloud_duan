@@ -845,7 +845,7 @@ public class LibvirtService {
     @SneakyThrows
     public void deleteImgFile(String name) {
         QueryWrapper<NodeInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("nodeUserPasswd", vmMapper.selectById(name).getServerip());
+        queryWrapper.eq("nodeIp", vmMapper.selectById(name).getServerip());
         NodeInfo nodeInfo = nodeMapper.selectOne(queryWrapper);
         ChannelSftp channel=SftpUtils.getSftpcon(nodeInfo.getNodeUserPasswd());
         channel.cd("/home/qemuVM/VM_place/");
