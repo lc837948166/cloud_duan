@@ -198,7 +198,7 @@ public class LibvirtController {
     }
 
     @ApiOperation(value = "删除虚拟机", notes = "删除指定的虚拟机和其关联的镜像文件")
-    @RequestMapping(value = "/delete/{name}",method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete/{name}",method = RequestMethod.POST)
     @ResponseBody
     @OperationLogDesc(module = "虚拟机管理", events = "删除虚拟机")
     public CommentResp deleteVirtual(@PathVariable("name") String name) {
