@@ -131,9 +131,21 @@ public class VMInfoController {
     @RequestMapping(value = "/selectAll/{usetype}")
     @ResponseBody
     public CommentResp  listVMInfo(@PathVariable("usetype") String usetype){
-        QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("usetype",usetype);
-        List<VMInfo2> tempList = vmMapper.selectList(queryWrapper);
+        List<VMInfo2> tempList;
+        if(usetype.equals("federal")){
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("usetype",usetype);
+            tempList = vmMapper.selectList(queryWrapper);
+            QueryWrapper queryWrapper2 = new QueryWrapper();
+            queryWrapper2.eq("usetype","flbc");
+            tempList.addAll(vmMapper.selectList(queryWrapper2));
+
+        }
+        else {
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("usetype", usetype);
+            tempList = vmMapper.selectList(queryWrapper);
+        }
 //        return new CommentResp(true, tempList,"");
         List<Map<String, Object>> modifiedList = new ArrayList<>();
         List<Integer> fixedNumbers = new ArrayList<>();
