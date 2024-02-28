@@ -1,4 +1,5 @@
 package com.xw.cloud.service;
+import cn.hutool.extra.ssh.Sftp;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xw.cloud.Utils.LibvirtUtils;
 import com.jcraft.jsch.*;
@@ -844,13 +845,15 @@ public class LibvirtService {
      */
     @SneakyThrows
     public void deleteImgFile(String name) {
-        QueryWrapper<NodeInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("nodeIp", vmMapper.selectById(name).getServerip());
-        NodeInfo nodeInfo = nodeMapper.selectOne(queryWrapper);
-        ChannelSftp channel=SftpUtils.getSftpcon(nodeInfo.getNodeUserPasswd());
-        channel.cd("/home/qemuVM/VM_place/");
-        channel.rm(name + ".qcow2");
-        SftpUtils.discon();
+        String endCommand="cd /home/qemuVM/VM_place/ && rm -rf "+name+".qcow2";
+        SftpUtils.getexecon(endCommand);
+//        QueryWrapper<NodeInfo> queryWrapper = new QueryWrapper<>();
+//        queryWrapper.eq("nodeIp", vmMapper.selectById(name).getServerip());
+//        NodeInfo nodeInfo = nodeMapper.selectOne(queryWrapper);
+//        ChannelSftp channel=SftpUtils.getSftpcon(nodeInfo.getNodeUserPasswd());
+//        channel.cd("/home/qemuVM/VM_place/");
+//        channel.rm(name + ".qcow2");
+//        SftpUtils.discon();
     }
 
     /**
