@@ -76,7 +76,7 @@ public class LibvirtService {
 
         return Virtual.builder()
                 .id(domain.getID())
-                .name(domain.getName())
+                .name(getOtherName(domain.getName()))
                 .state(domain.getInfo().state.toString())
                 .maxMem(domain.getMaxMemory() >>20)
                 .cpuNum(domain.getMaxVcpus())
@@ -128,17 +128,12 @@ public class LibvirtService {
 
     @SneakyThrows
     public String getOtherName(String name) {
-//        String command = "for mac in `sudo virsh domiflist "+name+" |grep -o -E \"([0-9a-f]{2}:){5}([0-9a-f]{2})\"` ; do arp -e | grep $mac  | grep -o -P \"^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\" ; done";
-//        String ip =SftpUtils.getexecon(command);
         VMInfo2 vmInfo2 = vmMapper.selectById(name);
-        if (vmInfo2 != null) {
             if(vmInfo2.getOthername().isEmpty())
             {
                 return name;
             }
             else return vmInfo2.getOthername();
-        }
-        return name;
     }
 
     @SneakyThrows
@@ -300,7 +295,7 @@ public class LibvirtService {
 //        long totalSize = blockInfo.getCapacity();
         return Virtual.builder()
                 .id(domain.getID())
-                .name(getOtherName(domain.getName()))
+                .name(domain.getName())
                 .state(domain.getInfo().state.toString())
                 .maxMem(domain.getMaxMemory()  >>20)
                 .useMem(getMem(domain))
