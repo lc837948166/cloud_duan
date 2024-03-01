@@ -129,11 +129,13 @@ public class LibvirtService {
     @SneakyThrows
     public String getOtherName(String name) {
         VMInfo2 vmInfo2 = vmMapper.selectById(name);
-            if(vmInfo2.getOthername().isEmpty())
-            {
+        if (vmInfo2 != null) {
+            String otherName = vmInfo2.getOthername();
+            if (otherName == null||otherName.isEmpty()) {
                 return name;
-            }
-            else return vmInfo2.getOthername();
+            } else return otherName;
+        }
+        return  name;
     }
 
     @SneakyThrows
