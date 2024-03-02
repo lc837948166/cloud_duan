@@ -263,6 +263,7 @@ public class LibvirtController {
             vmMapper.updateById(vm);
         }
         if(bandwidth!=null) {
+            if(bandwidth==0)bandwidth=1000;
             VMInfo2 vm = new VMInfo2();
             vm.setName(name);
             vm.setUpBandWidth(bandwidth);
