@@ -1325,7 +1325,7 @@ public class TaskJob {
                         c1.add(s);
                     }
                 }
-                if(flag_bw){ //需要执行带宽命令
+                if(flag_bw&&bw_singe!=0){ //需要执行带宽命令
                     bw_singe  = bw_singe*1000;
                     String ens = vm.getNic();
                     String won = "wondershaper -a "+ens+" "+"-d "+bw_singe+" "+"-u "+bw_singe+"";
