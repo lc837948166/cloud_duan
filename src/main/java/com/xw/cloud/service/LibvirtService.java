@@ -76,11 +76,12 @@ public class LibvirtService {
 
         return Virtual.builder()
                 .id(domain.getID())
-                .name(getOtherName(domain.getName()))
+                .name((domain.getName()))
                 .state(domain.getInfo().state.toString())
                 .maxMem(domain.getMaxMemory() >>20)
                 .cpuNum(domain.getMaxVcpus())
                 .ipaddr(getVMip(domain.getName()))
+                .otherName(getOtherName(domain.getName()))
                 .build();
     }
 
@@ -102,10 +103,11 @@ public class LibvirtService {
 //        String ip=vmMapper.selectById(domain.getName()).getIp();
         return Virtual.builder()
                 .id(domain.getID())
-                .name(getOtherName(domain.getName()))
+                .name(domain.getName())
                 .ipaddr(getVMip(name))
                 .state(domain.getInfo().state.toString())
                 .ipaddr(ip)
+                .otherName(getOtherName(domain.getName()))
                 .build();
     }
 

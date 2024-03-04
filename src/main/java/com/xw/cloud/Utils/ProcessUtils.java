@@ -178,7 +178,7 @@ public class ProcessUtils {
             newServerIp = "192.168.194.142";
         }
         String params = "ImgName=" + ImgName + "&name=" + name + "&memory=" + memory + "&cpuNum=" + cpuNum + "&OStype=" + OStype + "&nettype=" + nettype + "&serverip=" + newServerIp+"&usetype="+usetype; // 要传递的参数
-        if(bw>0){
+        if(bw>=0){
             params += "&bandwidth="+bw;
         }
         System.out.println(params);

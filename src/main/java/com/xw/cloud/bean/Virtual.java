@@ -29,5 +29,7 @@ public class Virtual {
     private Integer upBW;
     @JsonProperty(value = "downBandWidth")
     private Integer downBW;
+    @JsonProperty(value = "otherName")
+    private String otherName;
 
 }
