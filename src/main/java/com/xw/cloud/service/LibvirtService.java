@@ -132,7 +132,7 @@ public class LibvirtService {
     public String getOtherName(String name) {
         VMInfo2 vmInfo2 = vmMapper.selectById(name);
         if (vmInfo2 != null) {
-            String otherName = vmInfo2.getOthername();
+            String otherName = vmInfo2.getOtherName();
             if (otherName == null||otherName.isEmpty()) {
                 return name;
             } else return otherName;
@@ -518,7 +518,7 @@ public class LibvirtService {
      * 添加 虚拟机 xml------>name   1024MB
      */
     @SneakyThrows
-    public void addDomainByName(VM_create vmc,String serverip) {
+    public void addDomainByName(VM_create vmc,String serverip,String otherName) {
         String xml = "<domain type='kvm'>\n" +
                 "  <name>" + vmc.getName() + "</name>\n" +
                 "  <uuid>" + UUID.randomUUID() + "</uuid>\n" +
@@ -641,7 +641,7 @@ public class LibvirtService {
         log.info(vmc.getName() + "虚拟机已创建！");
         Thread.sleep(1000);
         initiateDomainByName(vmc.getName());
-        updateVMtable(vmc.getName(),serverip,vmc.getCpuNum(),vmc.getMemory());
+        updateVMtable(vmc.getName(),serverip,vmc.getCpuNum(),vmc.getMemory(),otherName);
         Thread.sleep(6000);
             getallVMip(serverip);
             for (int i = 0; i < 60 ; ++i) {
@@ -678,7 +678,7 @@ public class LibvirtService {
      * 更新数据库的虚拟机信息
      */
     @SneakyThrows
-    private void updateVMtable(String name,String serverip,int cpu,int memory) {
+    private void updateVMtable(String name,String serverip,int cpu,int memory,String otherName) {
 
         VMInfo2 vmInfo2=VMInfo2.builder()
                 .name(name)
@@ -686,6 +686,7 @@ public class LibvirtService {
                 .passwd("111")
                 .memory(memory)
                 .cpuNum(cpu)
+                .otherName(otherName)
                 .serverip(serverip).build();
         vmMapper.insert(vmInfo2);
     }

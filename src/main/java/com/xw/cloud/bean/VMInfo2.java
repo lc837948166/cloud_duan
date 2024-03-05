@@ -66,7 +66,7 @@ public class VMInfo2 {
     @JsonProperty(value = "nic")
     @ApiModelProperty(value = "nic")
     private String nic;
-    @JsonProperty(value = "othername")
-    @ApiModelProperty(value = "othername")
-    private String othername;
+    @JsonProperty(value = "otherName")
+    @ApiModelProperty(value = "otherName")
+    private String otherName;
 }

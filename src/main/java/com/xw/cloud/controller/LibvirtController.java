@@ -240,7 +240,8 @@ public class LibvirtController {
                                   @RequestParam("nettype") String NetType,
                                   @RequestParam("serverip") String serverip,
                                   @RequestParam(value = "usetype", required = false) String usetype,
-                                  @RequestParam(value = "bandwidth", required = false) Integer bandwidth) throws InterruptedException {
+                                  @RequestParam(value = "bandwidth", required = false) Integer bandwidth,
+                                  @RequestParam(value = "ohterName") String ohterName) throws InterruptedException {
         QueryWrapper<VMInfo2> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("name", name);
         long count = vmMapper.selectCount(queryWrapper);
@@ -253,7 +254,7 @@ public class LibvirtController {
         vmc.setImgName(ImgName);
         vmc.setNetType(NetType);
         libvirtService.addImgFile(vmc.getName(),ImgName);
-        libvirtService.addDomainByName(vmc,serverip);
+        libvirtService.addDomainByName(vmc,serverip,ohterName);
         libvirtService.addport(name);
         if(usetype!=null&&!usetype.isEmpty())
         {
