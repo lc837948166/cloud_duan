@@ -81,7 +81,6 @@ public class LibvirtService {
                 .maxMem(domain.getMaxMemory() >>20)
                 .cpuNum(domain.getMaxVcpus())
                 .ipaddr(getVMip(domain.getName()))
-                .otherName(getOtherName(domain.getName()))
                 .build();
     }
 
@@ -107,7 +106,6 @@ public class LibvirtService {
                 .ipaddr(getVMip(name))
                 .state(domain.getInfo().state.toString())
                 .ipaddr(ip)
-                .otherName(getOtherName(domain.getName()))
                 .build();
     }
 
@@ -157,8 +155,11 @@ public class LibvirtService {
     @SneakyThrows
     public void getallVMip(String serverip) {
         String ip1=findserverip(findRealIP(serverip),'.',3);
-
-        String command="bash /home/qemuVM/virsh-ip.sh all "+ip1;
+        QueryWrapper<VMInfo2> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("serverip", serverip);
+        VMInfo2 vminfo = vmMapper.selectOne(queryWrapper);
+        String name2= vminfo.getName();
+        String command="bash /home/qemuVM/virsh-ip.sh "+name2+" "+ip1;
         ProcessBuilder processBuilder = new ProcessBuilder();
         processBuilder.command("bash", "-c", command);
 
@@ -518,7 +519,7 @@ public class LibvirtService {
      * 添加 虚拟机 xml------>name   1024MB
      */
     @SneakyThrows
-    public void addDomainByName(VM_create vmc,String serverip,String otherName) {
+    public void addDomainByName(VM_create vmc,String serverip) {
         String xml = "<domain type='kvm'>\n" +
                 "  <name>" + vmc.getName() + "</name>\n" +
                 "  <uuid>" + UUID.randomUUID() + "</uuid>\n" +
@@ -641,7 +642,7 @@ public class LibvirtService {
         log.info(vmc.getName() + "虚拟机已创建！");
         Thread.sleep(1000);
         initiateDomainByName(vmc.getName());
-        updateVMtable(vmc.getName(),serverip,vmc.getCpuNum(),vmc.getMemory(),otherName);
+        updateVMtable(vmc.getName(),serverip,vmc.getCpuNum(),vmc.getMemory());
         Thread.sleep(6000);
             getallVMip(serverip);
             for (int i = 0; i < 60 ; ++i) {
@@ -678,7 +679,7 @@ public class LibvirtService {
      * 更新数据库的虚拟机信息
      */
     @SneakyThrows
-    private void updateVMtable(String name,String serverip,int cpu,int memory,String otherName) {
+    private void updateVMtable(String name,String serverip,int cpu,int memory) {
 
         VMInfo2 vmInfo2=VMInfo2.builder()
                 .name(name)
@@ -686,7 +687,6 @@ public class LibvirtService {
                 .passwd("111")
                 .memory(memory)
                 .cpuNum(cpu)
-                .otherName(otherName)
                 .serverip(serverip).build();
         vmMapper.insert(vmInfo2);
     }

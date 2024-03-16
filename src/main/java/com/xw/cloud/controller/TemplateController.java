@@ -136,7 +136,7 @@ public class TemplateController {
     public CommentResp addVirtual(@RequestParam("ImgName") String ImgName, @RequestParam("name") String name,
                                   @RequestParam("memory") int memory, @RequestParam("cpuNum") int cpuNum,
                                   @RequestParam("OStype") String OStype,@RequestParam("nettype") String NetType,
-                                  @RequestParam("serverip") String serverip,@RequestParam("otherName") String otherName) throws InterruptedException {
+                                  @RequestParam("serverip") String serverip) throws InterruptedException {
         VM_create vmc = new VM_create();
         vmc.setName(name);
         vmc.setMemory(memory);
@@ -145,7 +145,7 @@ public class TemplateController {
         vmc.setImgName(ImgName);
         vmc.setNetType(NetType);
         libvirtService.addImgFile(vmc.getName(),ImgName);
-        libvirtService.addDomainByName(vmc,serverip,otherName);
+        libvirtService.addDomainByName(vmc,serverip);
 
         return new CommentResp(true, null,"创建虚拟机成功");
     }
