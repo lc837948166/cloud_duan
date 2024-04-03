@@ -1,11 +1,7 @@
 package com.xw.cloud.service;
-import cn.hutool.extra.ssh.Sftp;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xw.cloud.Utils.LibvirtUtils;
-import com.jcraft.jsch.*;
 import com.xw.cloud.Utils.*;
 import com.xw.cloud.bean.*;
-import com.xw.cloud.bean.NodeInfo;
 import com.xw.cloud.mapper.IpaddrMapper;
 import com.xw.cloud.mapper.NodeMapper;
 import com.xw.cloud.mapper.VmMapper;
@@ -13,14 +9,11 @@ import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import org.libvirt.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.swing.*;
 import java.io.*;
 import java.net.ServerSocket;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import com.xw.cloud.Utils.SftpUtils;
 @Log
@@ -534,7 +527,7 @@ public class LibvirtService {
      * 创建 虚拟机 xml------>不需要看每行字符串的意义
      */
     @SneakyThrows
-    public void addDomainByName(VM_create vmc,String serverip,String otherName) {
+    public void addDomainByName(VM_create vmc,String serverip) {
         String xml = "<domain type='kvm'>\n" +
                 "  <name>" + vmc.getName() + "</name>\n" +
                 "  <uuid>" + UUID.randomUUID() + "</uuid>\n" +
@@ -659,7 +652,7 @@ public class LibvirtService {
         //启动该虚拟机
         initiateDomainByName(vmc.getName());
         //将该虚拟机部分信息保存到数据库
-        updateVMtable(vmc.getName(),serverip,vmc.getCpuNum(),vmc.getMemory(),otherName);
+        updateVMtable(vmc.getName(),serverip,vmc.getCpuNum(),vmc.getMemory());
         Thread.sleep(6000);
             //自动获取该虚拟机的ip，等启动完成后
             getallVMip(serverip);
@@ -699,7 +692,7 @@ public class LibvirtService {
      * 更新数据库的虚拟机信息
      */
     @SneakyThrows
-    private void updateVMtable(String name,String serverip,int cpu,int memory,String otherName) {
+    private void updateVMtable(String name,String serverip,int cpu,int memory) {
 
         VMInfo2 vmInfo2=VMInfo2.builder()
                 .name(name)
@@ -707,7 +700,6 @@ public class LibvirtService {
                 .passwd("111")
                 .memory(memory)
                 .cpuNum(cpu)
-                .otherName(otherName)
                 .serverip(serverip).build();
         vmMapper.insert(vmInfo2);
     }
