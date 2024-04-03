@@ -38,27 +38,7 @@ public class LibvirtController {
     @Resource
     private VmMapper vmMapper;
 
-    @ApiOperation(value = "虚拟化主页", notes = "返回虚拟化管理的主页")
-    @RequestMapping(value = {"/index"})
-    public String index(Model model) {
-        Host hostInfo = libvirtService.getHostInfo();
-        System.out.println(hostInfo);
-        model.addAttribute("hostinfo", hostInfo);
-        LibvirtConnect connectInformation = libvirtService.getLibvirtConnectInformation();
-        model.addAttribute("connectInformation", connectInformation);
-        return "index";
-    }
 
-    @ApiOperation(value = "主界面", notes = "返回虚拟机和网络状态的主界面")
-    @RequestMapping("/main")
-    public String main(Model model) {
-        List<Virtual> virtualList = libvirtService.getVirtualList();
-        model.addAttribute("virtualList", virtualList);
-        String netState = libvirtService.getNetState();
-        model.addAttribute("netState", netState);
-        return "main";
-
-    }
 
     @ApiOperation(value = "获取虚拟机列表", notes = "列出所有的虚拟机")
     @ResponseBody
@@ -212,6 +192,7 @@ public class LibvirtController {
     @ApiOperation(value = "跳转至添加虚拟机页面", notes = "返回添加虚拟机的界面")
     @RequestMapping("/toAddVirtual")
     @ResponseBody
+    //没啥用，不用看
     public String toAddVirtual(@RequestParam("name") String name,@RequestParam("ip") String ip) {
 
             VMInfo2 vmInfo2 = new VMInfo2();
@@ -273,88 +254,5 @@ public class LibvirtController {
         }
 
         return new CommentResp(true, null,"创建虚拟机"+name+"成功");
-    }
-
-    @ApiOperation(value = "获取快照列表", notes = "根据虚拟机名称获取其快照列表")
-    @RequestMapping("/getSnapshotList")
-    @OperationLogDesc(module = "虚拟机管理", events = "获取快照列表")
-    public String getSnapshotList(@RequestParam("name") String name,
-                                  Model model) {
-        List<Snapshot> snapshotList = libvirtService.getSnapshotListByName(name);
-        model.addAttribute("snapshotList", snapshotList);
-        model.addAttribute("virtualName", name);
-        return "snapshot";
-    }
-
-    @ApiOperation(value = "删除快照", notes = "删除指定虚拟机的特定快照")
-    @SneakyThrows
-    @RequestMapping("/deleteSnapshot")
-    @OperationLogDesc(module = "虚拟机管理", events = "删除快照")
-    public String deleteSnapshot(@RequestParam("virtualName") String virtualName,
-                                 @RequestParam("snapshotName") String snapshotName) {
-        libvirtService.deleteSnapshot(virtualName, snapshotName);
-        Thread.sleep(1000);
-        return "redirect:/getSnapshotList?name=" + virtualName;
-    }
-
-    @ApiOperation(value = "还原快照", notes = "将指定虚拟机还原至特定快照的状态")
-    @SneakyThrows
-    @RequestMapping("/revertSnapshot")
-    @OperationLogDesc(module = "虚拟机管理", events = "还原快照")
-    public String revertSnapshot(@RequestParam("virtualName") String virtualName,
-                                 @RequestParam("snapshotName") String snapshotName) {
-        libvirtService.revertSnapshot(virtualName, snapshotName);
-        Thread.sleep(1000);
-        return "redirect:/getSnapshotList?name=" + virtualName;
-    }
-
-    @ApiOperation(value = "创建快照", notes = "为指定虚拟机创建新的快照")
-    @SneakyThrows
-    @RequestMapping("/createSnapshot")
-    @OperationLogDesc(module = "虚拟机管理", events = "创建快照")
-    public String createSnapshot(@RequestParam("virtualName") String virtualName,
-                                 @RequestParam("snapshotName") String snapshotName) {
-        libvirtService.createSnapshot(virtualName, snapshotName);
-        Thread.sleep(1000);
-        return "redirect:/getSnapshotList?name=" + virtualName;
-    }
-
-    @ApiOperation(value = "存储池列表", notes = "获取所有存储池的列表")
-    @RequestMapping("/storagePoolList")
-    @OperationLogDesc(module = "虚拟机管理", events = "存储池列表")
-    public String storagePoolList(Model model) {
-        List<Storagepool> storagePoolList = libvirtService.getStoragePoolList();
-        model.addAttribute("storagePoolList", storagePoolList);
-        String netState = libvirtService.getNetState();
-        model.addAttribute("netState", netState);
-        return "storagepool";
-    }
-
-    @ApiOperation(value = "存储池列表", notes = "获取所有存储池的列表")
-    @SneakyThrows
-    @RequestMapping("/deleteStoragePool")
-    public String deleteStoragePool(@RequestParam("name") String name) {
-        libvirtService.deleteStoragePool(name);
-        Thread.sleep(1000);
-        return "redirect:/storagePoolList";
-    }
-
-    @ApiOperation(value = "跳转至创建存储池页面", notes = "返回创建存储池的界面")
-    @RequestMapping("/toCreateStoragepool")
-    @OperationLogDesc(module = "虚拟机管理", events = "跳转至创建存储池页面")
-    public String toCreateStoragepool(Model model) {
-        String netState = libvirtService.getNetState();
-        model.addAttribute("netState", netState);
-        return "addStoragepool";
-    }
-
-    @ApiOperation(value = "跳转至创建存储池页面", notes = "返回创建存储池的界面")
-    @SneakyThrows
-    @RequestMapping("/createStoragepool")
-    public String createStoragepool(@RequestParam("storagepoolName") String name,
-                                    @RequestParam("storagepoolPath") String url) {
-        libvirtService.createStoragepool(name, url);
-        Thread.sleep(1000);
-        return "redirect:/storagePoolList";
     }
 }

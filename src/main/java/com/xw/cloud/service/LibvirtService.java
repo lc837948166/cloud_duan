@@ -55,6 +55,7 @@ public class LibvirtService {
      * getDomainById
      */
     @SneakyThrows
+    //根据虚拟机id获取该虚拟机
     public Domain getDomainById(int id) {
         return LibvirtUtils.getConnection().domainLookupByID(id);
     }
@@ -63,6 +64,7 @@ public class LibvirtService {
      * getDomainByName
      */
     @SneakyThrows
+    ////根据虚拟机名获取该虚拟机
     public Domain getDomainByName(String name) {
         return LibvirtUtils.getConnection().domainLookupByName(name);
     }
@@ -71,6 +73,7 @@ public class LibvirtService {
      * getVirtualById
      */
     @SneakyThrows
+    //构建虚拟机信息：id、虚拟机名、状态（运行、关闭、挂起等）、最大内存、cpu个数、ip地址、别名（别名没用了）
     public Virtual getVirtualById(int id) {
         Domain domain = getDomainById(id);
 
@@ -93,6 +96,7 @@ public class LibvirtService {
      * getVirtualByName
      */
     @SneakyThrows
+    //构建虚拟机信息：id、虚拟机名、状态（运行、关闭、挂起等）、最大内存、cpu个数、ip地址、别名（别名没用了）
     public Virtual getVirtualByName(String name) {
         Domain domain = getDomainByName(name);
         String ip = null;
@@ -117,6 +121,7 @@ public class LibvirtService {
      * 虚拟机列表
      */
     @SneakyThrows
+    //通过id获取所有正在运行的虚拟机信息、通过name获取所有没有运行的虚拟机
     public List<Virtual> getVirtualList() {
         ArrayList<Virtual> virtualList = new ArrayList<>();
         // live
@@ -129,6 +134,7 @@ public class LibvirtService {
     }
 
     @SneakyThrows
+    //获取别名，暂时没用
     public String getOtherName(String name) {
         VMInfo2 vmInfo2 = vmMapper.selectById(name);
         if (vmInfo2 != null) {
@@ -141,6 +147,7 @@ public class LibvirtService {
     }
 
     @SneakyThrows
+    //根据虚拟机名从数据库读取该虚拟机的ip
     public String getVMip(String name) {
 //        String command = "for mac in `sudo virsh domiflist "+name+" |grep -o -E \"([0-9a-f]{2}:){5}([0-9a-f]{2})\"` ; do arp -e | grep $mac  | grep -o -P \"^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\" ; done";
 //        String ip =SftpUtils.getexecon(command);
@@ -153,8 +160,8 @@ public class LibvirtService {
         return ip;
     }
 
-
     @SneakyThrows
+    //通过执行virsh-ip 脚本来更新所有虚拟机的IP
     public void getallVMip(String serverip) {
         String ip1=findserverip(findRealIP(serverip),'.',3);
 
@@ -208,7 +215,7 @@ public class LibvirtService {
     }
 
 
-
+    //获取某个虚拟机的宿主机ip
     public String findserverip(String str, char c, int n) {
         int index = -1;
         for (int i = 0; i < n; i++) {
@@ -225,6 +232,7 @@ public class LibvirtService {
      * 虚拟机指标列表
      */
     @SneakyThrows
+    //获取虚拟机指标信息列表
     public List<Virtual> getIndexList() {
         ArrayList<Virtual> virtualList = new ArrayList<>();
         // live
@@ -233,11 +241,13 @@ public class LibvirtService {
         return virtualList;
     }
     @SneakyThrows
+    //获取虚拟机带宽限速信息
     public Virtual getIndex(String name,Integer up,Integer down) {
         return getIndexByName(name,up*1000,down*1000);
     }
 
     @SneakyThrows
+    //获取虚拟机指标信息（处于关闭状态的虚拟机）
     public Virtual getIndexByName(String name,Integer up,Integer down) {
         Domain domain = getDomainByName(name);
 //        String data =SftpUtils.getexecon("virsh domiflist "+name);
@@ -293,6 +303,7 @@ public class LibvirtService {
     }
 
     @SneakyThrows
+    //获取虚拟机指标信息（处于运行状态的虚拟机）
     public Virtual getVirtualByLive(int id) {
         Domain domain = getDomainById(id);
 //        DomainBlockInfo blockInfo = domain.blockInfo(home+"/VM_place/"+domain.getName()+".img");
@@ -310,6 +321,7 @@ public class LibvirtService {
     }
 
     @SneakyThrows
+    //获取某个虚拟机的内存利用率
     public double getMem(Domain domain){
         double useMem = 0;
         MemoryStatistic[] memoryStatistics = domain.memoryStats(9);
@@ -324,6 +336,7 @@ public class LibvirtService {
         return truncatedValue;
     }
     @SneakyThrows
+    //获取某个虚拟机的cpu利用率
     public double getCpu(Domain domain){
         long c1 = domain.getInfo().cpuTime;
         Thread.sleep(1000);
@@ -341,6 +354,7 @@ public class LibvirtService {
      * 暂停/挂起 虚拟机
      */
     @SneakyThrows
+    //挂起虚拟机
     private void suspendedDomain(Domain domain) {
         if (domain.isActive() == 1) {
             domain.suspend();
@@ -352,13 +366,14 @@ public class LibvirtService {
         suspendedDomain(getDomainById(id));
     }
 
+    //挂起虚拟机
     public void suspendedDomainName(String name) {
         suspendedDomain(getDomainByName(name));
     }
 
 
     /**
-     * 还原 暂停/挂起 虚拟机
+     * 还原 暂停/挂起的 虚拟机
      */
     @SneakyThrows
     private void resumeDomain(Domain domain) {
@@ -377,7 +392,7 @@ public class LibvirtService {
     }
 
     /**
-     * 保存 虚拟机 --->img文件
+     * 保存 虚拟机 --->img文件，没啥用，不用看
      */
     @SneakyThrows
     private void saveDomain(Domain domain) {
@@ -400,7 +415,7 @@ public class LibvirtService {
     }
 
     /**
-     * 恢复 虚拟机 --->img文件
+     * 恢复 虚拟机 --->img文件，也是没啥用，不用看
      */
     @SneakyThrows
     private void restoreDomain(Domain domain) {
@@ -457,6 +472,7 @@ public class LibvirtService {
             shutdownDomain(getDomainByName(name));
     }
 
+    //改变虚拟机配置（cpu个数和内存大小）
     public void changeVMByName(String name,int mem,int cpu) throws LibvirtException {
         VMInfo2 vm = new VMInfo2();
         vm.setName(name);
@@ -515,7 +531,7 @@ public class LibvirtService {
     }
 
     /**
-     * 添加 虚拟机 xml------>name   1024MB
+     * 创建 虚拟机 xml------>不需要看每行字符串的意义
      */
     @SneakyThrows
     public void addDomainByName(VM_create vmc,String serverip,String otherName) {
@@ -640,9 +656,12 @@ public class LibvirtService {
         LibvirtUtils.getConnection().domainDefineXML(xml);    // define ------> creat
         log.info(vmc.getName() + "虚拟机已创建！");
         Thread.sleep(1000);
+        //启动该虚拟机
         initiateDomainByName(vmc.getName());
+        //将该虚拟机部分信息保存到数据库
         updateVMtable(vmc.getName(),serverip,vmc.getCpuNum(),vmc.getMemory(),otherName);
         Thread.sleep(6000);
+            //自动获取该虚拟机的ip，等启动完成后
             getallVMip(serverip);
             for (int i = 0; i < 60 ; ++i) {
                 if (vmMapper.selectById(vmc.getName()).getIp() == null || vmMapper.selectById(vmc.getName()).getIp().isEmpty()){
@@ -651,11 +670,13 @@ public class LibvirtService {
                 }
                 else break;
                 }
+            //将该虚拟机的网卡保存到数据库
         updateNIC(vmc.getName(),vmMapper.selectById(vmc.getName()).getIp());
 
             }
 
     @SneakyThrows
+    //查找虚拟机的网卡并存到数据库
      public void updateNIC(String name,String ip){
          VMInfo2 vmInfo2 = new VMInfo2();
          vmInfo2.setName(name);
@@ -691,6 +712,7 @@ public class LibvirtService {
         vmMapper.insert(vmInfo2);
     }
     @SneakyThrows
+    //通过端服务器的ip，查找其给虚拟机分配的ip网段如192.168.122.xxx或192.168.124.xxx
     public String findRealIP(String serverip){
         String realip=null;
         Ipaddr ip= ipaddrMapper.selectById(serverip);
@@ -699,7 +721,8 @@ public class LibvirtService {
     }
 
 
-    //添加端口映射
+    //添加端口映射，将虚拟机的固定的6个端口，通过宿主机上从12345端口开始顺序分配的6个端口映射出来
+    //这样访问宿主机上映射出的端口，就是在访问虚拟机的6个端口之一
     @SneakyThrows
     public void addport(String name){
         String ip=vmMapper.selectById(name).getIp();
@@ -740,6 +763,8 @@ public class LibvirtService {
             System.out.println("命令执行超时");
         }
     }
+
+    //获取连续的6个端口序列
     @SneakyThrows
     private static List<Integer> findAvailablePortSequence(int startingPort, int sequenceLength) {
         List<Integer> availablePorts = new ArrayList<>();
@@ -758,6 +783,7 @@ public class LibvirtService {
         return availablePorts;
     }
 
+    //检查这个端口是否被占用
     private static boolean isPortAvailable(int port) {
         try (ServerSocket ignored = new ServerSocket(port)) {
             return true;
@@ -767,6 +793,7 @@ public class LibvirtService {
     }
 
     @SneakyThrows
+    // 删除映射的端口，主要用于删除虚拟机时，一并把占用宿主机的6个端口释放出来
     public void deletePort(String name) {
         String targetIpAddress =vmMapper.selectById(name).getIp();
         Integer hostport = vmMapper.selectById(name).getHostport();
@@ -811,7 +838,7 @@ public class LibvirtService {
 
 
     /**
-     * 删除 虚拟机 xml
+     * 删除 虚拟机
      */
     @SneakyThrows
     private void deleteDomain(Domain domain) {
@@ -833,7 +860,7 @@ public class LibvirtService {
      * get ImgList
 
     /**
-     * 添加 img
+     * 复制固定的虚拟机镜像到VM_place文件夹中
      */
     @SneakyThrows
     public void addImgFile(String name,String ImgName) {
@@ -876,7 +903,7 @@ public class LibvirtService {
     }
 
     /**
-     * 关闭网络
+     * 关闭网络，没用，不用看
      */
     @SneakyThrows
     public void closeNetWork() {
@@ -889,7 +916,7 @@ public class LibvirtService {
     }
 
     /**
-     * 启动网络
+     * 启动网络，没用，不用看
      */
     @SneakyThrows
     public void openNetWork() {
@@ -902,7 +929,7 @@ public class LibvirtService {
     }
 
     /**
-     * 网络 State
+     * 网络 State，没用，不用看
      */
     @SneakyThrows
     public String getNetState() {
@@ -912,145 +939,6 @@ public class LibvirtService {
         else return "off";
     }
 
-    /**
-     * getSnapshotList
-     */
-    @SneakyThrows
-    public List<Snapshot> getSnapshotListByName(String name) {
-        // virsh snapshot-list      虚拟机名
-        String cmd = "virsh snapshot" + "-list " + name;
-        Process process = Runtime.getRuntime().exec(cmd);
-        LineNumberReader line = new LineNumberReader(new InputStreamReader(process.getInputStream()));
-        ArrayList<Snapshot> snapshots = new ArrayList<>();
-        String str;
-        int linCount = 0;
-        int snapshotNum = getDomainByName(name).snapshotNum(); // 2
-        while ((str = line.readLine()) != null && snapshotNum > 0) {
-            linCount++;
-            if (linCount <= 2) continue;  // -2 line
-            else {
-                snapshotNum--;
-                String[] lineStr = str.split("   ");
-                snapshots.add(Snapshot.builder().name(lineStr[0]).creationTime(lineStr[1]).state(lineStr[2]).build());
-            }
-        }
-        return snapshots;
-    }
-
-    /**
-     * snapshot管理
-     */
-    @SneakyThrows
-    private void snapshotManger(String op, String name, String snapshotName) {
-        // virsh snapshot-create-as 虚拟机名称 快照名称
-        // virsh snapshot-delete    虚拟机名称 快照名称
-        // virsh snapshot-revert    虚拟机名称 快照名称
-        String cmd = "";
-        switch (op) {
-            case "creat":
-                cmd = "virsh snapshot" + "-create-as " + name + " " + snapshotName;
-                break;
-            case "delete":
-                cmd = "virsh snapshot" + "-delete " + name + " " + snapshotName;
-                break;
-            case "revert":
-                cmd = "virsh snapshot" + "-revert " + name + " " + snapshotName;
-                break;
-        }
-        Runtime.getRuntime().exec(cmd);
-    }
-
-    /**
-     * 创建快照
-     */
-    public void createSnapshot(String name, String snapshotName) {
-        snapshotManger("creat", name, snapshotName);
-        log.info("虚拟机" + name + "成功创建快照" + snapshotName);
-    }
-
-    /**
-     * 删除快照
-     */
-    public void deleteSnapshot(String name, String snapshotName) {
-        snapshotManger("delete", name, snapshotName);
-        log.info("虚拟机" + name + "成功删除快照" + snapshotName);
-    }
-
-    /**
-     * 启动快照
-     */
-    public void revertSnapshot(String name, String snapshotName) {
-        snapshotManger("revert", name, snapshotName);
-        log.info("虚拟机" + name + "成功切换快照" + snapshotName);
-    }
-
-    /**
-     * getStoragePoolList
-     */
-    @SneakyThrows
-    public List<Storagepool> getStoragePoolList() {
-        String[] pools = LibvirtUtils.getConnection().listStoragePools();
-        String[] definedPools = LibvirtUtils.getConnection().listDefinedStoragePools();
-        log.info("pools" + Arrays.toString(pools) + "definedPools" + Arrays.toString(definedPools));
-        List<Storagepool> storagePoolList = new ArrayList<>();
-        for (String pool : pools) storagePoolList.add(getStoragePool(pool));
-        for (String pool : definedPools) storagePoolList.add(getStoragePool(pool));
-        return storagePoolList;
-    }
-
-    /**
-     * getStoragePool ByName
-     */
-    @SneakyThrows
-    public Storagepool getStoragePool(String name) {
-        StoragePool storagePool = LibvirtUtils.getConnection().storagePoolLookupByName(name);
-        StoragePoolInfo info = storagePool.getInfo();
-        return Storagepool.builder()
-                .name(name)     // 名称
-                .type("qcow2")  // 类型
-                .capacity((int) (info.capacity / 1024.00 / 1024.00 / 1024.00))     // GB 容量
-                .available((int) (info.available / 1024.00 / 1024.00 / 1024.00))   // GB 可用容量
-                .allocation((int) (info.allocation / 1024.00 / 1024.00 / 1024.00)) // GB 已用容量
-                .usage(((int) ((info.allocation / 1024.00 / 1024.00 / 1024.00) / (info.capacity / 1024.00 / 1024.00 / 1024.00) * 100)) + "%") // 使用率(%)
-                .state(info.state.toString())                // 状态
-                .xml(storagePool.getXMLDesc(0))        // 描述xml
-                .build();
-    }
-
-    /**
-     * 删除StoragePool ByName
-     */
-    @SneakyThrows
-    public void deleteStoragePool(String name) {
-        StoragePool storagePool = LibvirtUtils.getConnection().storagePoolLookupByName(name);
-        for (String pool : LibvirtUtils.getConnection().listStoragePools())
-            if (pool.equals(name)) storagePool.destroy();
-        for (String pool : LibvirtUtils.getConnection().listDefinedStoragePools())
-            if (pool.equals(name)) storagePool.undefine();
-    }
-
-    /**
-     * 创建Storagepool  >>>>>> url必须存在
-     */
-    @SneakyThrows
-    public boolean createStoragepool(String name, String url) {
-        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "\n" +
-                "<pool type=\"dir\">\n" +
-                "    <name>" + name + "</name> \n" +       // 名称必须唯一
-                "    <source>\n" +
-                "    </source>\n" +
-                "    <target>\n" +
-                "        <path>" + url + "</path> \n" +                     // StoragePool 在宿主机的路径
-                "        <permissions> \n" +                                // 权限
-                "            <mode>0711</mode>\n" +
-                "            <owner>0</owner>\n" +
-                "            <group>0</group>\n" +
-                "        </permissions>\n" +
-                "    </target>\n" +
-                "</pool>";
-        return LibvirtUtils.getConnection().storagePoolCreateXML(xml, 0) == null ? false : true;
-    }
 
 
     @SneakyThrows
