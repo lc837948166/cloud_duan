@@ -786,45 +786,50 @@ public class LibvirtService {
 
     @SneakyThrows
     // 删除映射的端口，主要用于删除虚拟机时，一并把占用宿主机的6个端口释放出来
-    public void deletePort(String name) {
-        String targetIpAddress =vmMapper.selectById(name).getIp();
-        Integer hostport = vmMapper.selectById(name).getHostport();
-        if (hostport != null) {
-        String filePath = "/etc/rinetd.conf";
-        int linesToRemove = 6;
+    public boolean deletePort(String name) {
+        VMInfo2 vmInfo2 =vmMapper.selectById(name);
+        if(vmInfo2!=null) {
+            String targetIpAddress = vmMapper.selectById(name).getIp();
+            Integer hostport = vmMapper.selectById(name).getHostport();
+            if (hostport != null) {
+                String filePath = "/etc/rinetd.conf";
+                int linesToRemove = 6;
 
-        BufferedReader reader = new BufferedReader(new FileReader(filePath));
-        StringBuilder contentBuilder = new StringBuilder();
-        String line;
-        int linesRemoved = 1;
+                BufferedReader reader = new BufferedReader(new FileReader(filePath));
+                StringBuilder contentBuilder = new StringBuilder();
+                String line;
+                int linesRemoved = 1;
 
-        while ((line = reader.readLine()) != null && linesRemoved < linesToRemove) {
-            if (line.contains(targetIpAddress)) {
-                linesRemoved++;
-            } else {
-                contentBuilder.append(line).append(System.lineSeparator());
+                while ((line = reader.readLine()) != null && linesRemoved < linesToRemove) {
+                    if (line.contains(targetIpAddress)) {
+                        linesRemoved++;
+                    } else {
+                        contentBuilder.append(line).append(System.lineSeparator());
+                    }
+                }
+
+                String remainingLines;
+                while ((remainingLines = reader.readLine()) != null) {
+                    contentBuilder.append(remainingLines).append(System.lineSeparator());
+                }
+
+                reader.close();
+                String content = contentBuilder.toString();
+
+                // 将修改后的内容写回文件
+                BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+                writer.write(content);
+                writer.close();
+
+                String endCommand = "pkill rinetd";
+                SftpUtils.getexecon(endCommand);
+                String startCommand = "rinetd -c /etc/rinetd.conf";
+                ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", startCommand);
+                Process process = processBuilder.start();
+                return true;
             }
         }
-
-        String remainingLines;
-        while ((remainingLines = reader.readLine()) != null) {
-            contentBuilder.append(remainingLines).append(System.lineSeparator());
-        }
-
-        reader.close();
-        String content = contentBuilder.toString();
-
-        // 将修改后的内容写回文件
-        BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
-        writer.write(content);
-        writer.close();
-
-        String endCommand="pkill rinetd";
-        SftpUtils.getexecon(endCommand);
-        String startCommand = "rinetd -c /etc/rinetd.conf";
-        ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", startCommand);
-        Process process = processBuilder.start();
-        }
+        return false;
     }
 
 

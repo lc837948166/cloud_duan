@@ -182,8 +182,8 @@ public class LibvirtController {
     @ResponseBody
     @OperationLogDesc(module = "虚拟机管理", events = "删除虚拟机")
     public CommentResp deleteVirtual(@PathVariable("name") String name) {
-        libvirtService.deletePort(name);
-        libvirtService.deleteDomainByName(name);
+        boolean flag=libvirtService.deletePort(name);
+        if (flag){libvirtService.deleteDomainByName(name);}
         libvirtService.deleteImgFile(name);
 
         return new CommentResp(true, null,name+".qcow2删除成功");
